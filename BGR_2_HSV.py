@@ -1,6 +1,6 @@
 import argparse
 import cv2
-import numpy
+import numpy as np
 
 ap = argparse.ArgumentParser()
 ap.add_argument("Red", help="Specify the Red value of the RGB color.")
