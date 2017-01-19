@@ -11,4 +11,4 @@ args = vars(ap.parse_args())
 
 color = np.uint8([[[args["Blue"],args["Green"],args["Red"]]]])
 hsv_color = cv2.cvtColor(color, cv2.COLOR_BGR2HSV)
-print hsv_color
+print (hsv_color)
