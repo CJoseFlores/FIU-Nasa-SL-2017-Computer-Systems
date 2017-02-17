@@ -16,6 +16,10 @@ time.sleep(0.1)
 lowerboundary = np.array([110, 50, 100]) # used for FIU blue.
 upperboundary = np.array([130, 255, 255]) # used for FIU blue.
 
+#Initialize center variables to prevent undefined error.
+cX = 1
+cY = 1
+
 # capture frames from the camera
 while(True):
 	# Capture the video feed frame-by-frame
@@ -29,7 +33,7 @@ while(True):
 	# convert the resized image to grayscale, blur it slightly,
 	# and threshold it
 	
-	blurred = cv2.GaussianBlur(resized, (5, 5), 0)
+	blurred = cv2.GaussianBlur(resized, (7, 7), 0)
 	'''
 	gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
 	lab = cv2.cvtColor(blurred, cv2.COLOR_BGR2LAB)
@@ -49,8 +53,10 @@ while(True):
 	sd = ShapeDetector()
 	cl = ColorLabeler()
 
+
 	# loop over the contours
 	for c in cnts:
+		
 		# compute the center of the contour
 		M = cv2.moments(c)
 		try:
