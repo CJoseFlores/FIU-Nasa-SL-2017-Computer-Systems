@@ -4,6 +4,7 @@ from pyimagesearch.colorlabeler import ColorLabeler
 import time
 import cv2
 import imutils
+import numpy as np
  
 # initialize the camera by creating a VideoCapture Object.
 # the ID passed is simply thy camera number (0 or -1 will be passed if only 1 camera attached.)
@@ -11,7 +12,10 @@ camera = cv2.VideoCapture(0)
 
 # allow the camera to warmup
 time.sleep(0.1)
- 
+
+lowerboundary = np.array([110, 50, 100]) # used for FIU blue.
+upperboundary = np.array([130, 255, 255]) # used for FIU blue.
+
 # capture frames from the camera
 while(True):
 	# Capture the video feed frame-by-frame
@@ -19,12 +23,22 @@ while(True):
 
 	resized = imutils.resize(image, width=300)
 	ratio = image.shape[0] / float(resized.shape[0])
+
+
+
 	# convert the resized image to grayscale, blur it slightly,
 	# and threshold it
+	
 	blurred = cv2.GaussianBlur(resized, (5, 5), 0)
+	'''
 	gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
 	lab = cv2.cvtColor(blurred, cv2.COLOR_BGR2LAB)
 	thresh = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY)[1]
+	'''
+	# Convert image to HSV and make a mask for "blue"
+	lab = cv2.cvtColor(blurred, cv2.COLOR_BGR2LAB)
+	hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
+	thresh = cv2.inRange(hsv, lowerboundary, upperboundary)
 
 	# find contours in the thresholded image
 	cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
