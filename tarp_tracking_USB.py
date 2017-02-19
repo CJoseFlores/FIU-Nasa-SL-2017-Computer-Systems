@@ -13,8 +13,11 @@ camera = cv2.VideoCapture(0)
 # allow the camera to warmup
 time.sleep(0.1)
 
-lowerboundary = np.array([110, 50, 100]) # used for FIU blue.
-upperboundary = np.array([130, 255, 255]) # used for FIU blue.
+# Create color ranges for Mask Filtering.
+lowerBoundaryBlue = np.array([110, 50, 100]) 
+upperBoundaryBlue = np.array([130, 255, 255]) 
+lowerBoundaryYellow = np.array([19, 100, 100])
+upperBoundaryYellow = np.array([39, 255, 255])
 
 #Initialize center variables to prevent undefined error.
 cX = 1
@@ -39,10 +42,14 @@ while(True):
 	lab = cv2.cvtColor(blurred, cv2.COLOR_BGR2LAB)
 	thresh = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY)[1]
 	'''
-	# Convert image to HSV and make a mask for "blue"
+	# Convert image to HSV and make a mask for Blue, Yellow and Red.
 	lab = cv2.cvtColor(blurred, cv2.COLOR_BGR2LAB)
 	hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
-	thresh = cv2.inRange(hsv, lowerboundary, upperboundary)
+	threshYellow = cv2.inRange(hsv, lowerBoundaryYellow, upperBoundaryYellow)
+	threshBlue = cv2.inRange(hsv, lowerBoundaryBlue, upperBoundaryBlue)
+
+	# Combine the masks.
+	thresh = threshYellow + threshBlue
 
 	# find contours in the thresholded image
 	cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
