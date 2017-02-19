@@ -14,10 +14,9 @@ camera = cv2.VideoCapture(0)
 time.sleep(0.1)
 
 # Create color ranges for Mask Filtering.
-lowerBoundaryBlue = np.array([100, 50, 100]) 
-upperBoundaryBlue = np.array([120, 255, 255]) 
-lowerBoundaryYellow = np.array([19, 100, 100])
-upperBoundaryYellow = np.array([39, 255, 255])
+blueRange = (np.array([100, 100, 100]), np.array([120, 255, 255]))
+yellowRange = (np.array([19, 100, 100]), np.array([39, 255, 255]))
+redRange = (np.array([164, 100, 100]), np.array([184, 255, 255]))
 
 #Initialize center variables to prevent undefined error.
 cX = 1
@@ -45,11 +44,12 @@ while(True):
 	# Convert image to HSV and make a mask for Blue, Yellow and Red.
 	lab = cv2.cvtColor(blurred, cv2.COLOR_BGR2LAB)
 	hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
-	threshYellow = cv2.inRange(hsv, lowerBoundaryYellow, upperBoundaryYellow)
-	threshBlue = cv2.inRange(hsv, lowerBoundaryBlue, upperBoundaryBlue)
+	threshYellow = cv2.inRange(hsv, yellowRange[0], yellowRange[1])
+	threshBlue = cv2.inRange(hsv, blueRange[0], blueRange[1])
+	threshRed = cv2.inRange(hsv, redRange[0], redRange[1])
 
 	# Combine the masks.
-	thresh = threshYellow + threshBlue
+	thresh = threshYellow + threshBlue + threshRed
 
 	# find contours in the thresholded image
 	cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
