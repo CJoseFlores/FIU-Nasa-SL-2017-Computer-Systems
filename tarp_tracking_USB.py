@@ -14,8 +14,8 @@ camera = cv2.VideoCapture(0)
 time.sleep(0.1)
 
 # Create color ranges for Mask Filtering.
-lowerBoundaryBlue = np.array([110, 50, 100]) 
-upperBoundaryBlue = np.array([130, 255, 255]) 
+lowerBoundaryBlue = np.array([100, 50, 100]) 
+upperBoundaryBlue = np.array([120, 255, 255]) 
 lowerBoundaryYellow = np.array([19, 100, 100])
 upperBoundaryYellow = np.array([39, 255, 255])
 
@@ -70,7 +70,8 @@ while(True):
 			cX = int((M["m10"] / M["m00"]) * ratio)
 			cY = int((M["m01"] / M["m00"]) * ratio)
 		except ZeroDivisionError:
-			print ("Error. We dont care")
+			# print ("Error. We dont care")
+			DoNotPrint = True
 		# detect the shape of the contour and label the color
 		shape = sd.detect(c)
 		color = cl.label(lab, c)

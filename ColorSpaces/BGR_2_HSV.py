@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 # Create Argument Parser with arguments of an RGB color.
-ap = argparse.ArgumentParser()
+ap = argparse.ArgumentParser(description="Converts any RGB color specified to an Open CV HSV range color.")
 ap.add_argument("Red", help="Specify the Red value of the RGB color.")
 ap.add_argument("Green",help="Specify the Green value of the RGB color.")
 ap.add_argument("Blue",help="Specify the Blue value of the RGB color.")
