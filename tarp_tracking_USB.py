@@ -14,7 +14,7 @@ camera = cv2.VideoCapture(0)
 time.sleep(0.1)
 
 # Create color ranges for Mask Filtering.
-blueRange = (np.array([100, 100, 100]), np.array([120, 255, 255]))
+blueRange = (np.array([100, 110, 110]), np.array([120, 255, 255]))
 yellowRange = (np.array([19, 100, 100]), np.array([39, 255, 255]))
 redRange = (np.array([164, 100, 100]), np.array([184, 255, 255]))
 
@@ -29,8 +29,6 @@ while(True):
 
 	resized = imutils.resize(image, width=300)
 	ratio = image.shape[0] / float(resized.shape[0])
-
-
 
 	# convert the resized image to grayscale, blur it slightly,
 	# and threshold it
