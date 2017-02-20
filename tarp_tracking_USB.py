@@ -1,6 +1,5 @@
 # import the necessary packages
 from pyimagesearch.shapedetector import ShapeDetector
-from pyimagesearch.colorlabeler import ColorLabeler
 import time
 import cv2
 import imutils
@@ -40,7 +39,6 @@ while(True):
 	thresh = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY)[1]
 	'''
 	# Convert image to HSV and make a mask for Blue, Yellow and Red.
-	lab = cv2.cvtColor(blurred, cv2.COLOR_BGR2LAB)
 	hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
 	threshYellow = cv2.inRange(hsv, yellowRange[0], yellowRange[1])
 	threshBlue = cv2.inRange(hsv, blueRange[0], blueRange[1])
@@ -54,10 +52,8 @@ while(True):
 		cv2.CHAIN_APPROX_SIMPLE)
 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 
-	# initialize the shape detector and color labeler
+	# initialize the shape detector.
 	sd = ShapeDetector()
-	cl = ColorLabeler()
-
 
 	# loop over the contours
 	for c in cnts:
@@ -70,9 +66,8 @@ while(True):
 		except ZeroDivisionError:
 			# print ("Error. We dont care")
 			DoNotPrint = True
-		# detect the shape of the contour and label the color
+		# detect the shape of the contour.
 		shape = sd.detect(c)
-		color = cl.label(lab, c)
 
 		# multiply the contour (x, y)-coordinates by the resize ratio,
 		# then draw the contours and the name of the shape and labeled
@@ -80,7 +75,7 @@ while(True):
 		c = c.astype("float")
 		c *= ratio
 		c = c.astype("int")
-		text = "{} {}".format(color, shape)
+		text = "{}".format(shape)
 		cv2.drawContours(image, [c], -1, (0, 255, 0), 2)
 		cv2.putText(image, text, (cX, cY),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
