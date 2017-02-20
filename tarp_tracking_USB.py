@@ -1,5 +1,6 @@
 # import the necessary packages
 from pyimagesearch.shapedetector import ShapeDetector
+from pyimagesearch.remove_contours import is_contour_bad
 import time
 import cv2
 import imutils
@@ -25,19 +26,13 @@ cY = 1
 while(True):
 	# Capture the video feed frame-by-frame
 	ret, image = camera.read()
-
 	resized = imutils.resize(image, width=300)
 	ratio = image.shape[0] / float(resized.shape[0])
 
-	# convert the resized image to grayscale, blur it slightly,
-	# and threshold it
+	# Blur the image to help with shape recognition.
 	
 	blurred = cv2.GaussianBlur(resized, (21, 21), 0)
-	'''
-	gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
-	lab = cv2.cvtColor(blurred, cv2.COLOR_BGR2LAB)
-	thresh = cv2.threshold(gray, 60, 255, cv2.THRESH_BINARY)[1]
-	'''
+
 	# Convert image to HSV and make a mask for Blue, Yellow and Red.
 	hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
 	threshYellow = cv2.inRange(hsv, yellowRange[0], yellowRange[1])
@@ -51,6 +46,9 @@ while(True):
 	cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL,
 		cv2.CHAIN_APPROX_SIMPLE)
 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
+
+	# Initialing a mask that will be used to remove bad contours.
+	badMask = np.ones(thresh.shape[:2], dtype="uint8") * 255
 
 	# initialize the shape detector.
 	sd = ShapeDetector()
@@ -70,11 +68,18 @@ while(True):
 		shape = sd.detect(c)
 
 		# multiply the contour (x, y)-coordinates by the resize ratio,
-		# then draw the contours and the name of the shape and labeled
-		# color on the image
 		c = c.astype("float")
 		c *= ratio
 		c = c.astype("int")
+
+		# if the contour is bad, draw it on the mask.
+		if is_contour_bad(c):
+			cv2.drawContours(badMask, [c], -1, 0, -1)
+
+		# Remove the bad contours from the image.
+		#image = image * badMask
+
+		# Draw the remaining contours and the name of the shape.
 		text = "{}".format(shape)
 		cv2.drawContours(image, [c], -1, (0, 255, 0), 2)
 		cv2.putText(image, text, (cX, cY),
@@ -82,6 +87,7 @@ while(True):
 
 		# show the output image
 		cv2.imshow("Image", image)
+		cv2.imshow("Bad Masks", badMask)
 	# show the frame
 	#cv2.imshow("Frame", image)
 	key = cv2.waitKey(1) & 0xFF
