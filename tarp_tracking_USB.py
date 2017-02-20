@@ -32,7 +32,7 @@ while(True):
 	# convert the resized image to grayscale, blur it slightly,
 	# and threshold it
 	
-	blurred = cv2.GaussianBlur(resized, (7, 7), 0)
+	blurred = cv2.GaussianBlur(resized, (21, 21), 0)
 	'''
 	gray = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
 	lab = cv2.cvtColor(blurred, cv2.COLOR_BGR2LAB)
