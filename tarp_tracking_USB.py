@@ -47,8 +47,8 @@ while(True):
 		cv2.CHAIN_APPROX_SIMPLE)
 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 
-	# Initialing a mask that will be used to remove bad contours.
-	badMask = np.ones(thresh.shape[:2], dtype="uint8") * 255
+	# Remember to generalize the resolution when we move onto the PI!!!!
+	badMask = np.ones((480,640,3), dtype="uint8") * 255
 
 	# initialize the shape detector.
 	sd = ShapeDetector()
@@ -78,6 +78,7 @@ while(True):
 
 		# Remove the bad contours from the image.
 		#image = image * badMask
+		# cv2.bitwise_and(image, image, mask=badMask)
 
 		# Draw the remaining contours and the name of the shape.
 		text = "{}".format(shape)
