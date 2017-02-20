@@ -82,9 +82,10 @@ while(True):
 
 		# Draw the remaining contours and the name of the shape.
 		text = "{}".format(shape)
-		cv2.drawContours(image, [c], -1, (0, 255, 0), 2)
-		cv2.putText(image, text, (cX, cY),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+		if not(is_contour_bad(c)):
+			cv2.drawContours(image, [c], -1, (0, 255, 0), 2)
+			cv2.putText(image, text, (cX, cY),
+				cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
 
 		# show the output image
 		cv2.imshow("Image", image)
@@ -98,5 +99,6 @@ while(True):
 	if key == ord("q"):
 		break
 
+print (len(cnts))
 camera.release()
 cv2.destroyAllWindows()
